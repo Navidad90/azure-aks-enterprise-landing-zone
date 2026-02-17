@@ -1,4 +1,4 @@
-🚀 Azure Enterprise AKS Landing Zone (Hub-Spoke Architecture)
+Azure Enterprise AKS Landing Zone (Hub-Spoke Architecture):
 
 This project implements an enterprise-grade Azure AKS landing zone using Terraform, based on Microsoft’s hub-and-spoke reference architecture.
 
@@ -18,7 +18,8 @@ Monitoring integration with Log Analytics
 
 Infrastructure modularization using Terraform
 
-🏗 Architecture Overview
+
+Architecture Overview:
 Hub (Shared Services)
 
 Virtual Network (10.0.0.0/16)
@@ -61,7 +62,7 @@ Centralized outbound routing
 
 DNS zone linked to both Hub and Spoke
 
-🔐 Networking Design
+Networking Design
 
 Traffic Flow:
 
@@ -72,7 +73,7 @@ AKS Subnet
 
 This enforces centralized inspection and aligns with enterprise network governance patterns.
 
-🧠 Terraform Design Approach
+Terraform Design Approach
 
 This project follows a layered Terraform structure:
 
@@ -104,7 +105,8 @@ Cross-module references
 
 No manual Azure Portal configuration is required.
 
-📂 Project Structure
+Project Structure
+
 root/
 │
 ├── environments/
@@ -114,7 +116,7 @@ root/
 │   ├── hub-network/
 │   └── spoke-network/
 
-🛠 Technologies Used
+Technologies Used
 
 Terraform
 
@@ -132,7 +134,7 @@ Azure Private DNS
 
 Azure Log Analytics
 
-🎯 Key Engineering Concepts Demonstrated
+Key Engineering Concepts Demonstrated
 
 Hub-spoke architecture implementation
 
@@ -148,13 +150,13 @@ Enterprise naming conventions
 
 Infrastructure validation using terraform plan
 
-🚧 Deployment Status
+Deployment Status
 
 This project is fully defined and validated using Terraform plan.
 
 No resources are deployed by default in order to avoid unnecessary cloud cost.
 
-📌 Author
+Author
 
 Azure Solutions Architect
 Specializing in:
@@ -164,3 +166,5 @@ Enterprise Azure networking
 AKS platform architecture
 
 Terraform-based infrastructure automation
+
+![alt text](image.png)
