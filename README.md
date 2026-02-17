@@ -167,4 +167,4 @@ AKS platform architecture
 
 Terraform-based infrastructure automation
 
-![alt text](image.png)
+![AKS Enterprise Baseline](./images/aks-baseline-architecture.svg)
