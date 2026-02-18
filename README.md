@@ -1,135 +1,175 @@
-Azure Enterprise AKS Landing Zone (Hub-Spoke Architecture)
+# Enterprise Azure AKS Landing Zone (Hub & Spoke) – Terraform
 
-Overview
+## Overview
 
-This project implements an enterprise-grade Azure AKS landing zone using Terraform, based on Microsoft’s hub-and-spoke reference architecture.
+This project implements a production-grade Azure enterprise landing zone using Terraform.  
 
-The objective is to demonstrate real-world Azure platform engineering practices, focusing on secure networking, modular infrastructure design, and production-ready deployment patterns.
+It delivers a secure, scalable, governance-aligned Hub-and-Spoke architecture designed to host a private AKS platform with enterprise networking, monitoring, security controls, and policy enforcement.
 
-Engineering Goals
-This implementation demonstrates:
+This is not a lab setup.  
+This reflects real-world enterprise Azure architecture patterns.
 
-Hub-spoke networking design
-Centralized outbound traffic inspection using Azure Firewall
-Private AKS cluster deployment
-Private DNS integration
-Network security segmentation
-Monitoring integration with Log Analytics
-Infrastructure modularization using Terraform
+---
 
-Architecture Overview
-Hub (Shared Services)
+## 🏗 Architecture Summary
 
-The hub virtual network hosts centralized and shared services.
+### Hub (Shared Services)
 
-Virtual Network (10.0.0.0/16)
-Azure Firewall
-Azure Bastion
-Gateway Subnet (reserved for future connectivity)
-Log Analytics Workspace
-Private DNS Zone for AKS
-VNet Peering configuration
-The hub enforces centralized governance, security, and observability.
+- Azure Virtual Network (10.0.0.0/16)
+- Azure Firewall (Standard)
+- Firewall Policy + Rule Collection Groups
+- DDoS Protection Plan
+- VPN Gateway (Route-based)
+- Azure Bastion
+- Private DNS Zones:
+  - privatelink.westeurope.azmk8s.io
+  - privatelink.azurecr.io
+  - privatelink.vaultcore.azure.net
+- Log Analytics Workspace
+- Network Watcher
+- NSG Flow Logs + Traffic Analytics
+- Custom Azure Policy (Deny Public IP in Spoke)
 
-Spoke (Workload Landing Zone)
-The spoke virtual network hosts workload-specific resources.
+---
 
-Virtual Network (10.1.0.0/16)
-AKS Nodes Subnet
-Ingress Subnet
-Private Endpoint Subnet
-API Server Subnet
-Network Security Group
-Route Table enforcing forced egress to Azure Firewall
-Private AKS Cluster
+### Spoke (AKS Platform)
 
-This separation aligns with enterprise landing zone principles and workload isolation strategies.
+- Virtual Network (10.1.0.0/16)
+- Dedicated subnets:
+  - AKS Nodes
+  - AKS API (Private)
+  - Ingress
+  - Private Endpoints
+  - Application Gateway
+- Private AKS Cluster
+- Azure Container Registry (Premium) + Private Endpoint
+- Key Vault (RBAC enabled) + Private Endpoint
+- Application Gateway (WAF_v2) integrated with Key Vault certificate
+- Route tables forwarding traffic through Azure Firewall
+- NSG with flow logging enabled
 
-Connectivity Model
-The networking configuration includes:
+---
 
-Bidirectional VNet peering
-Centralized outbound routing through Azure Firewall
-Private DNS zone linked to both Hub and Spoke
+## 🔐 Security Design
 
-Networking Design
-Traffic Flow
-Outbound traffic follows this path:
+- AKS deployed as **Private Cluster**
+- No public exposure of control plane
+- Azure Firewall as central egress control
+- DDoS protection enabled at VNet level
+- WAF (OWASP 3.2) in Prevention mode
+- Private Endpoints for ACR and Key Vault
+- NSG Flow Logs + Traffic Analytics enabled
+- Subscription-level policy denying Public IP creation in Spoke resource group
+- RBAC enabled for Key Vault
+- Managed Identity for Application Gateway to access certificates
 
-AKS Subnet
-→ Route Table
-→ Azure Firewall (Hub)
-→ Internet
+---
 
-This ensures centralized inspection and aligns with enterprise network governance standards.
+## 🌐 Network Topology
 
-Terraform Design Approach
-This project follows a layered Terraform structure to reflect enterprise infrastructure patterns.
+Hub ↔ Spoke peering with:
 
-Root Layer
+- Allow forwarded traffic
+- Centralized firewall routing
+- Private DNS resolution from Hub to Spoke
 
-Backend configuration
-Provider configuration
-Environment orchestration
+All internet-bound traffic from Spoke subnets routes through Azure Firewall.
 
-Environment Layer
+---
 
-Development environment configuration
+## 📊 Observability
 
-Module Layer
+- Log Analytics Workspace
+- Firewall diagnostics enabled
+- VPN Gateway diagnostics enabled
+- Bastion diagnostics enabled
+- NSG Flow Logs enabled
+- Traffic Analytics configured
 
-hub-network module
-spoke-network module
+---
 
-Modules communicate using:
+## 📁 Repository Structure
 
-Input variables
-Output values
-Cross-module references
-
-All infrastructure is defined as code. No manual Azure Portal configuration is required.
-
-Project Structure
-root/
-│
-├── environments/
-│   └── dev/
+weu-aks-enterprise-baseline/
 │
 ├── modules/
-│   ├── hub-network/
-│   └── spoke-network/
+│ ├── hub-network/
+│ └── spoke-network/
+│
+├── environments/
+│ └── dev/
+│
+└── README.md
 
-Technologies Used
 
-Terraform
-AzureRM Provider
-Azure Virtual Networks
-Azure Firewall
-Azure Bastion
-Azure Kubernetes Service (Private Cluster)
-Azure Private DNS
-Azure Log Analytics
+Modules are fully reusable and environment-agnostic.
 
-Key Engineering Concepts Demonstrated
+---
 
-Hub-spoke architecture implementation
-Private AKS cluster networking
-Centralized outbound control
-Modular Terraform design
-Cross-module dependency handling
-Enterprise naming conventions
-Infrastructure validation using terraform plan
+## 🚀 Deployment
 
-Deployment Status
+### Prerequisites
 
-The full architecture is defined and validated using Terraform plan.
-No resources are deployed by default in order to avoid unnecessary cloud costs.
+- Azure CLI
+- Terraform >= 1.5
+- Contributor access to subscription
+
+### Initialize
+
+```bash
+terraform init
+Plan
+terraform plan -out final.plan
+Apply
+terraform apply final.plan
+🧠 Design Decisions
+Hub-and-Spoke chosen for centralized security and scalability
+
+Firewall-based egress control over NAT Gateway for policy enforcement
+
+Private AKS for production security posture
+
+Policy-as-Code integrated into Terraform
+
+Flow logs and diagnostics enforced at baseline level
+
+WAF integrated via Key Vault certificate for TLS termination
+
+🎯 Key Competencies Demonstrated
+Enterprise Azure Networking
+
+Terraform modular design
+
+Infrastructure as Code best practices
+
+Secure AKS platform engineering
+
+Azure Firewall & Policy design
+
+Private Link & DNS architecture
+
+Identity & RBAC integration
+
+Observability implementation
+
+Governance controls
+
+📌 Future Enhancements
+Azure Firewall Premium (TLS inspection)
+
+Azure Policy initiative bundles
+
+Terraform remote backend with state locking
+
+CI/CD pipeline integration
+
+Workload Identity for AKS
+
+Production / Staging environment separation
 
 Author
-
-Azure Solutions Architect specializing in:
-Enterprise Azure networking
-AKS platform architecture
-Terraform-based infrastructure automation
+Navid
+Azure Solutions Architect
+Enterprise Cloud & Security Architecture
 
 ![AKS Enterprise Baseline](./images/aks-baseline-architecture.svg)
