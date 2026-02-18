@@ -11,7 +11,7 @@ This reflects real-world enterprise Azure architecture patterns.
 
 ---
 
-## 🏗 Architecture Summary
+##  Architecture Summary
 
 ### Hub (Shared Services)
 
@@ -50,7 +50,7 @@ This reflects real-world enterprise Azure architecture patterns.
 
 ---
 
-## 🔐 Security Design
+##  Security Design
 
 - AKS deployed as **Private Cluster**
 - No public exposure of control plane
@@ -65,7 +65,7 @@ This reflects real-world enterprise Azure architecture patterns.
 
 ---
 
-## 🌐 Network Topology
+##  Network Topology
 
 Hub ↔ Spoke peering with:
 
@@ -77,7 +77,7 @@ All internet-bound traffic from Spoke subnets routes through Azure Firewall.
 
 ---
 
-## 📊 Observability
+##  Observability
 
 - Log Analytics Workspace
 - Firewall diagnostics enabled
@@ -88,7 +88,7 @@ All internet-bound traffic from Spoke subnets routes through Azure Firewall.
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 weu-aks-enterprise-baseline/
 │
@@ -106,7 +106,7 @@ Modules are fully reusable and environment-agnostic.
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 ### Prerequisites
 
@@ -122,7 +122,8 @@ Plan
 terraform plan -out final.plan
 Apply
 terraform apply final.plan
-🧠 Design Decisions
+
+Design Decisions
 Hub-and-Spoke chosen for centralized security and scalability
 
 Firewall-based egress control over NAT Gateway for policy enforcement
@@ -135,7 +136,7 @@ Flow logs and diagnostics enforced at baseline level
 
 WAF integrated via Key Vault certificate for TLS termination
 
-🎯 Key Competencies Demonstrated
+Key Competencies Demonstrated
 Enterprise Azure Networking
 
 Terraform modular design
@@ -154,7 +155,7 @@ Observability implementation
 
 Governance controls
 
-📌 Future Enhancements
+Future Enhancements
 Azure Firewall Premium (TLS inspection)
 
 Azure Policy initiative bundles
@@ -171,5 +172,3 @@ Author
 Navid
 Azure Solutions Architect
 Enterprise Cloud & Security Architecture
-
-![AKS Enterprise Baseline](./images/aks-baseline-architecture.svg)
